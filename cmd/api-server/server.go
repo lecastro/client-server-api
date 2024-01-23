@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/lecastro/client-server-api/database"
 	"github.com/lecastro/client-server-api/helpers"
 )
 
@@ -24,6 +25,12 @@ type dollarPrice struct {
 }
 
 func main() {
+	err := database.Conn()
+
+	if err != nil {
+		panic(err)
+	}
+
 	http.HandleFunc("/", DollarPrice)
 	http.ListenAndServe(":8080", nil)
 }
