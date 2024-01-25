@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/lecastro/client-server-api/internal/database"
 	"github.com/lecastro/client-server-api/internal/helpers"
+	"github.com/lecastro/client-server-api/internal/model"
 )
 
 type dollarPrice struct {
@@ -25,12 +25,6 @@ type dollarPrice struct {
 }
 
 func main() {
-	err := database.Conn()
-
-	if err != nil {
-		panic(err)
-	}
-
 	http.HandleFunc("/", DollarPrice)
 	http.ListenAndServe(":8080", nil)
 }
@@ -62,6 +56,8 @@ func DollarPrice(w http.ResponseWriter, r *http.Request) {
 
 	respJson, err := json.Marshal(data["USDBRL"])
 
+	persist(data["USDBRL"])
+
 	if err != nil {
 		w.Write([]byte("Key 'USDBRL' not found JSON."))
 	}
@@ -70,5 +66,27 @@ func DollarPrice(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println("Error writing answer:", err)
+	}
+}
+
+func persist(data dollarPrice) {
+	dp := model.DollarPrice{
+		Code:       data.Code,
+		Codein:     data.Codein,
+		Name:       data.Name,
+		High:       data.High,
+		Low:        data.Low,
+		VarBid:     data.VarBid,
+		PctChange:  data.PctChange,
+		Bid:        data.Bid,
+		Ask:        data.Ask,
+		Timestamp:  data.Timestamp,
+		CreateDate: data.CreateDate,
+	}
+
+	err := model.Create(&dp)
+
+	if err != nil {
+		panic(err)
 	}
 }

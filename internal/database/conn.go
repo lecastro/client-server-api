@@ -7,7 +7,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Conn() error {
+func Conn() (*sql.DB, error) {
 	path := "./internal/database/dollarPrice.db"
 
 	db, err := sql.Open("sqlite3", path)
@@ -16,13 +16,15 @@ func Conn() error {
 		panic(err)
 	}
 
-	defer db.Close()
-
 	err = db.Ping()
 
 	if err != nil {
 		panic(err)
 	}
 
-	return nil
+	return db, nil
+}
+
+func Close(db *sql.DB) {
+	db.Close()
 }
