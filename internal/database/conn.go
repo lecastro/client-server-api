@@ -8,7 +8,7 @@ import (
 )
 
 func Conn() error {
-	path := "./database/dollarPrice.db"
+	path := "./internal/database/dollarPrice.db"
 
 	db, err := sql.Open("sqlite3", path)
 

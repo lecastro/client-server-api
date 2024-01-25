@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/lecastro/client-server-api/database"
-	"github.com/lecastro/client-server-api/helpers"
+	"github.com/lecastro/client-server-api/internal/database"
+	"github.com/lecastro/client-server-api/internal/helpers"
 )
 
 type dollarPrice struct {

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/lecastro/client-server-api/helpers"
+	"github.com/lecastro/client-server-api/internal/helpers"
 )
 
 func main() {
