@@ -1,7 +1,9 @@
 package model
 
 import (
+	"context"
 	"database/sql"
+	"time"
 
 	"github.com/lecastro/client-server-api/internal/database"
 )
@@ -21,6 +23,10 @@ type DollarPrice struct {
 }
 
 func Create(dp *DollarPrice) error {
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond)
+
+	defer cancel()
 	db, err := database.Conn()
 
 	defer database.Close(db)
@@ -31,13 +37,13 @@ func Create(dp *DollarPrice) error {
 
 	makeTable(db)
 
-	stmt, err := db.Prepare("INSERT INTO dollar_price (code, codein, name, high, low, varBid, pctChange, bid, ask, timestamp, create_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)")
+	stmt, err := db.PrepareContext(ctx, "INSERT INTO dollar_price (code, codein, name, high, low, varBid, pctChange, bid, ask, timestamp, create_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(dp.Code, dp.Codein, dp.Name, dp.High, dp.Low, dp.VarBid, dp.PctChange, dp.Bid, dp.Ask, dp.Timestamp, dp.CreateDate)
+	_, err = stmt.ExecContext(ctx, dp.Code, dp.Codein, dp.Name, dp.High, dp.Low, dp.VarBid, dp.PctChange, dp.Bid, dp.Ask, dp.Timestamp, dp.CreateDate)
 
 	if err != nil {
 		return err
