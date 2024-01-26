@@ -27,7 +27,7 @@ type dollarPrice struct {
 }
 
 func main() {
-	http.HandleFunc("/", DollarPrice)
+	http.HandleFunc("/cotacao", DollarPrice)
 	http.ListenAndServe(":8080", nil)
 }
 
