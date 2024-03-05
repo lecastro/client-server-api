@@ -4,5 +4,5 @@ go 1.21.6
 
 require (
 	github.com/golang-migrate/migrate v3.5.4+incompatible
-	github.com/mattn/go-sqlite3 v1.14.19
+	github.com/mattn/go-sqlite3 v1.14.22
 )

@@ -4,8 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -13,7 +12,7 @@ import (
 	"github.com/lecastro/client-server-api/internal/helpers"
 )
 
-type dollarPrice struct {
+type CurrencyData struct {
 	Bid string `json:"bid"`
 }
 
@@ -35,23 +34,21 @@ func main() {
 
 	defer res.Body.Close()
 
-	io.Copy(os.Stdout, res.Body)
-
-	body, err := json.Marshal(res.Body)
-
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		helpers.HandleError(err)
 	}
 
+	fmt.Println("Corpo da resposta:", string(body))
+
 	persistDollarPriceFile(body)
 }
 
-func persistDollarPriceFile(value []byte) {
-	var data map[string]dollarPrice
+func persistDollarPriceFile(body []byte) {
+	var data CurrencyData
 
-	_ = json.Unmarshal(value, &data)
+	_ = json.Unmarshal(body, &data)
 
-	log.Println(data)
 	f, err := os.Create("./cotacao.txt")
 
 	if err != nil {
@@ -60,7 +57,7 @@ func persistDollarPriceFile(value []byte) {
 
 	defer f.Close()
 
-	str := fmt.Sprintf("Dólar: {%0.2f}\n", data)
+	str := fmt.Sprintf("Dollar: %s\n", data.Bid)
 
 	_, err = f.WriteString(str)
 
