@@ -1,1 +1,1 @@
-Dólar: {map[]}
+Dollar: 4.9374
